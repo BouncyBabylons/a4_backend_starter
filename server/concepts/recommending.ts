@@ -44,14 +44,4 @@ export default class RecommendingConcept {
 			throw new PostAuthorNotMatchError(user, _id);
 		}
 	}
-
-
-export class PostAuthorNotMatchError extends NotAllowedError {
-	constructor(
-		public readonly author: ObjectId,
-		public readonly _id: ObjectId,
-		) {
-		super("{0} is not the author of recommendation {1}!", author, _id);
-	}
-}
 }
