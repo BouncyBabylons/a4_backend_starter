@@ -3,8 +3,8 @@ import DocCollection, { BaseDoc } from "../framework/doc";
 import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 
 export interface RecommendingDoc extends BaseDoc {
-	recommendedBy: ObjectID;
-	recommendedTo: ObjectID;
+	recommendedBy: ObjectId;
+	recommendedTo: ObjectId;
 	content: string;
 }
 
@@ -12,13 +12,13 @@ export interface RecommendingDoc extends BaseDoc {
  * concept: Recommending [User] [recomemendee] [recommendation]
  */
 export default class RecommendingConcept {
-	public readonly recommendations: DocCollection<PostDoc>;
+	public readonly recommendations: DocCollection<RecommendingDoc>;
 
 	/**
 	 * Make an instance of Recommending.
 	 */
 	constructor(collectionName: string) {
-		this.recommendations = new DocCollection<PostDoc>(collectionName);
+		this.recommendations = new DocCollection<RecommendingDoc>(collectionName);
 	}
 
 	async create(author: ObjectId, content: string) {
@@ -32,16 +32,16 @@ export default class RecommendingConcept {
 	}
 
 	async getByAuthor(author: ObjectId){
-		return await this.comments.readMany({ author });
+		return await this.recommendations.readMany({ author });
 	}
 
 	async assertAuthorIsUser(_id: ObjectId, user:ObjectId) {
-		const comment = await this.comments.readOne({ _id });
-		if (!comment) {
-			throw new NotFoundError('Comment ${_id} does not exist!');
+		const recommendation = await this.recommendations.readOne({ _id });
+		if (!recommendation) {
+			throw new NotFoundError('Recommendation ${_id} does not exist!');
 		}
-		if (post.author.toString() !== user.toString()) {
-			throw new PostAuthorNotMatchError(user, _id);
+		if (recommendation.recommendedBy.toString() !== user.toString()) {
+			throw new NotFoundError("Try again dude");
 		}
 	}
 }

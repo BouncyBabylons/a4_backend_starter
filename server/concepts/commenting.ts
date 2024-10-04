@@ -2,8 +2,8 @@ import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 
-export interface PostDoc extends BaseDoc {
-	author: ObjectID;
+export interface CommentingDoc extends BaseDoc {
+	author: ObjectId;
 	content: string;
 }
 
@@ -11,15 +11,15 @@ export interface PostDoc extends BaseDoc {
  * concept: Commenting [Author] [commentTarget]
  */
 export default class CommentingConcept {
-	public readonly comments: DocCollection<PostDoc>;
+	public readonly comments: DocCollection<CommentingDoc>;
 
 	/**
 	 * Make an instance of Commenting.
 	 */
 	constructor(collectionName: string) {
-		this.comments = new DocCollection<PostDoc>(collectionName);
+		this.comments = new DocCollection<CommentingDoc>(collectionName);
 	}
-	
+
 	async create(author: ObjectId, content: string) {
 		const _id = await this.comments.createOne({author, content});
 		return { msg: "Comment successfully created!", comment: await this.comments.readOne({ _id }) };
