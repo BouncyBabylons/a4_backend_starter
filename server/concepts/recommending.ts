@@ -21,8 +21,8 @@ export default class RecommendingConcept {
 		this.recommendations = new DocCollection<RecommendingDoc>(collectionName);
 	}
 
-	async create(author: ObjectId, content: string) {
-		const _id = await this.recommendations.createOne({author, content});
+	async create(recommendedTo: ObjectId, content: string) {
+		const _id = await this.recommendations.createOne({recommendedTo, content});
 		return { msg: "Recommendation successfully created!", recommendation: await this.recommendations.readOne({ _id }) };
 	}
 
