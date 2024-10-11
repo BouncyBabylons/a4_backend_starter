@@ -66,13 +66,13 @@ const operations: Operation[] = [
     name: "Create Post",
     endpoint: "/api/posts",
     method: "POST",
-    fields: { content: "input" },
+    fields: { title: "input", creator: "input", rating: "input", content: "input" },
   },
   {
     name: "Update Post",
     endpoint: "/api/posts/:id",
     method: "PATCH",
-    fields: { id: "input", content: "input", options: { backgroundColor: "input" } },
+    fields: { id: "input", title: "input", creator: "input", rating: "input", content: "input", options: { backgroundColor: "input" } },
   },
   {
     name: "Delete Post",
@@ -80,9 +80,36 @@ const operations: Operation[] = [
     method: "DELETE",
     fields: { id: "input" },
   },
-  //
-  // ...
-  //
+  {
+    name: "Create Comment",
+    endpoint: "/api/comments/",
+    method: "POST",
+    fields: { id: "input", content: "input" }
+  },
+  {
+    name: "View Comments For User",
+    endpoint: "/api/comments/:id",
+    method: "GET",
+    fields: { id: "input" }
+  },
+  {
+    name: "Make Recommendation",
+    endpoint: "/api/recommendations/",
+    method: "POST",
+    fields: { to: "input", postID: "input" }
+  },
+  // {
+  //   name: "Update Recommendation",
+  //   endpoint: "/api/recommendations/:id",
+  //   method: "PATCH",
+  //   fields: { id: "input", content: "input" }
+  // },
+  {
+    name: "Delete Recommendation",
+    endpoint: "api/recommendations/:id",
+    method: "DELETE",
+    fields: { id: "input" }
+  }
 ];
 
 /*

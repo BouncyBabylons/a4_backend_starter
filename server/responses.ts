@@ -1,6 +1,8 @@
 import { Authing } from "./app";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friending";
 import { PostAuthorNotMatchError, PostDoc } from "./concepts/posting";
+import { CommentDoc } from "./concepts/commenting";
+import { RecommendationDoc } from "./concepts/recommending"
 import { Router } from "./framework/router";
 
 /**
@@ -17,6 +19,22 @@ export default class Responses {
     }
     const author = await Authing.getUserById(post.author);
     return { ...post, author: author.username };
+  }
+
+  static async comment(comment: CommentDoc | null) {
+    if (!comment) {
+      return comment;
+    }
+    const author = await Authing.getUserById(comment.author);
+    return { ...comment, author: author.username };
+  }
+
+  static async recommendation(recommendation: RecommendationDoc | null) {
+    if(!recommendation) {
+      return recommendation;
+    }
+    const recommender = await Authing.getUserById(recommendation.recommendedBy);
+    return { ...recommendation, recommender: recommender.username }
   }
 
   /**

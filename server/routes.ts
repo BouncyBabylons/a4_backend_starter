@@ -84,18 +84,21 @@ class Routes {
   }
 
   @Router.post("/posts")
-  async createPost(session: SessionDoc, content: string, options?: PostOptions) {
+  async createPost(session: SessionDoc, title: string, creator: string, rating: number, content: string, options?: PostOptions) {
     const user = Sessioning.getUser(session);
-    const created = await Posting.create(user, content, options);
+    await Posting.assertValidRating(rating);
+    const created = await Posting.create(user, title, creator, rating, content, options);
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
 
   @Router.patch("/posts/:id")
-  async updatePost(session: SessionDoc, id: string, content?: string, options?: PostOptions) {
+  async updatePost(session: SessionDoc, id: string, title?: string, creator?: string, rating?: number, content?: string, options?: PostOptions) {
     const user = Sessioning.getUser(session);
     const oid = new ObjectId(id);
+    console.log(rating);
+    // await Posting.assertValidRating(rating);
     await Posting.assertAuthorIsUser(oid, user);
-    return await Posting.update(oid, content, options);
+    return await Posting.update(oid, title, creator, rating, content, options);
   }
 
   @Router.delete("/posts/:id")
@@ -153,8 +156,45 @@ class Routes {
     return await Friending.rejectRequest(fromOid, user);
   }
 
-//   @Router.post("/commenting/post/")
-//   async createComment
+
+/// Bouncy's routes
+
+
+  @Router.post("/comments/")
+  async createCommentOnPost(session: SessionDoc, id: string, content: string) {
+    const user = Sessioning.getUser(session);
+    const target = new ObjectId(id);
+    await Posting.assertPostExists(target);
+    const created = await Commenting.createComment(user, target, content);
+    return { msg: created.msg, comment: await Responses.comment(created.comment) };
+  }
+
+  @Router.get("/comments/:id")
+  async viewComments(session: SessionDoc) {
+    const user = Sessioning.getUser(session);
+    return await Commenting.getCommentsForUser(user);
+  }
+
+  @Router.post("/recommendations/")
+  async makeRecommendation(session: SessionDoc, id: string, content: string) {
+    const user = Sessioning.getUser(session);
+    const target = new ObjectId(id);
+    await Authing.assertUserExists(target);
+    const recommendation = new ObjectId(content);
+    await Posting.assertPostExists(recommendation);
+    const created = await Recommending.makeRecommendation(user, target, recommendation);
+    return { msg: created.msg, recommendation: Responses.recommendation(created.recommendation)}
+  }
+
+  @Router.delete("/recommendations/:id")
+  async deleteRecommendation(session: SessionDoc, id: string) {
+    const user = Sessioning.getUser(session);
+    const oid = new ObjectId(id);
+    return Recommending.delete(oid)
+  }
+
+  // @Router.get("")
+  // @Router.post("/friends/recommendations/")
 }
 
 /** The web app. */
